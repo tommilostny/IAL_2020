@@ -230,9 +230,13 @@ void DLPostDelete (tDLList *L) {
 ** Pokud je seznam L neaktivní nebo pokud je aktivní prvek
 ** posledním prvkem seznamu, nic se neděje.
 **/
-	
-		
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Act != NULL && L->Act != L->Last)
+	{
+		tDLElemPtr temp = L->Act->rptr;
+		L->Act->rptr = temp->rptr;
+		temp->rptr->lptr = L->Act;
+		free(temp);
+	}
 }
 
 void DLPreDelete (tDLList *L) {
@@ -241,9 +245,13 @@ void DLPreDelete (tDLList *L) {
 ** Pokud je seznam L neaktivní nebo pokud je aktivní prvek
 ** prvním prvkem seznamu, nic se neděje.
 **/
-	
-			
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Act != NULL && L->Act != L->First)
+	{
+		tDLElemPtr temp = L->Act->lptr;
+		L->Act->lptr = temp->lptr;
+		temp->lptr->rptr = L->Act;
+		free(temp);
+	}
 }
 
 void DLPostInsert (tDLList *L, int val) {
