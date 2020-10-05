@@ -101,9 +101,8 @@ void DLInsertFirst (tDLList *L, int val) {
 
 	if (item != NULL) //kontrola alokace nového prvku
 	{
+		//nový prvek - nemá předchůce, následníkem je současný první prvek
 		item->data = val;
-
-		//nový prvek nemá předchůce, následníkem je současný první prvek
 		item->lptr = NULL;
 		item->rptr = L->First;
 
@@ -111,6 +110,10 @@ void DLInsertFirst (tDLList *L, int val) {
 		if (L->First != NULL)
 			L->First->lptr = item;
 		L->First = item;
+
+		//v případě prázdného seznamu je nový prvek zároveň posledním
+		if (L->Last == NULL)
+			L->Last = item;
 	}
 	else DLError();
 }
@@ -121,9 +124,25 @@ void DLInsertLast(tDLList *L, int val) {
 ** V případě, že není dostatek paměti pro nový prvek při operaci malloc,
 ** volá funkci DLError().
 **/ 	
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	tDLElemPtr item = malloc(sizeof(struct tDLElem));
+
+	if (item != NULL)
+	{
+		//nový prvek - předchůdcem je aktuálně poslední prvek, následníka nemá
+		item->data = val;
+		item->lptr = L->Last;
+		item->rptr = NULL;
+
+		//následníkem aktuálně posledního prvku je nový prvek
+		if (L->Last != NULL)
+			L->Last->rptr = item;
+		L->Last = item;
+
+		//v případě prázdného seznamu je nový prvek zároveň prvním
+		if (L->First == NULL)
+			L->First = item;
+	}
+	else DLError();
 }
 
 void DLFirst (tDLList *L) {
