@@ -261,9 +261,19 @@ void DLPostInsert (tDLList *L, int val) {
 ** V případě, že není dostatek paměti pro nový prvek při operaci malloc,
 ** volá funkci DLError().
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Act != NULL)
+	{
+		tDLElemPtr item = malloc(sizeof(struct tDLElem));
+		if (item != NULL)
+		{
+			item->data = val;
+			item->lptr = L->Act;
+			item->rptr = L->Act->rptr;
+			L->Act->rptr->lptr = item;
+			L->Act->rptr = item;
+		}
+		else DLError();
+	}
 }
 
 void DLPreInsert (tDLList *L, int val) {
@@ -273,9 +283,18 @@ void DLPreInsert (tDLList *L, int val) {
 ** V případě, že není dostatek paměti pro nový prvek při operaci malloc,
 ** volá funkci DLError().
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Act != NULL)
+	{
+		tDLElemPtr item = malloc(sizeof(struct tDLElem));
+		if (item != NULL)
+		{
+			item->data = val;
+			item->lptr = L->Act->lptr;
+			item->rptr = L->Act;
+			L->Act->lptr->rptr = item;
+			L->Act->lptr = item;
+		}
+	}
 }
 
 void DLCopy (tDLList *L, int *val) {
