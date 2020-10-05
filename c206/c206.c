@@ -350,9 +350,7 @@ int DLActive (tDLList *L) {
 ** Je-li seznam L aktivní, vrací nenulovou hodnotu, jinak vrací 0.
 ** Funkci je vhodné implementovat jedním příkazem return.
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	return L->Act != NULL;
 }
 
 /* Konec c206.c*/
