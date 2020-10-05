@@ -302,10 +302,11 @@ void DLCopy (tDLList *L, int *val) {
 ** Prostřednictvím parametru val vrátí hodnotu aktivního prvku seznamu L.
 ** Pokud seznam L není aktivní, volá funkci DLError ().
 **/
-		
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Act != NULL)
+	{
+		*val = L->Act->data;
+	}
+	else DLError();
 }
 
 void DLActualize (tDLList *L, int val) {
@@ -313,9 +314,10 @@ void DLActualize (tDLList *L, int val) {
 ** Přepíše obsah aktivního prvku seznamu L.
 ** Pokud seznam L není aktivní, nedělá nic.
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Act != NULL)
+	{
+		L->Act->data = val;
+	}
 }
 
 void DLSucc (tDLList *L) {
