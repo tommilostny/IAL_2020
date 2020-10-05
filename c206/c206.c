@@ -168,10 +168,11 @@ void DLCopyFirst (tDLList *L, int *val) {
 ** Prostřednictvím parametru val vrátí hodnotu prvního prvku seznamu L.
 ** Pokud je seznam L prázdný, volá funkci DLError().
 **/
-
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->First != NULL)
+	{
+		*val = L->First->data;
+	}
+	else DLError();
 }
 
 void DLCopyLast (tDLList *L, int *val) {
@@ -179,9 +180,11 @@ void DLCopyLast (tDLList *L, int *val) {
 ** Prostřednictvím parametru val vrátí hodnotu posledního prvku seznamu L.
 ** Pokud je seznam L prázdný, volá funkci DLError().
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Last != NULL)
+	{
+		*val = L->Last->data;
+	}
+	else DLError();
 }
 
 void DLDeleteFirst (tDLList *L) {
