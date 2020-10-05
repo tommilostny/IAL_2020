@@ -218,9 +218,10 @@ void DLDeleteLast (tDLList *L) {
 			L->Act = NULL;
 
 		//uvolnění paměti posledního prvku, nastavení jeho předchůdce jako nového posledního
-		tDLElemPtr temp = L->Last->lptr;
-		free(L->Last);
-		L->Last = temp;
+		tDLElemPtr temp = L->Last;
+		L->Last = L->Last->lptr;
+		L->Last->rptr = NULL;
+		free(temp);
 	}
 }
 
@@ -232,9 +233,17 @@ void DLPostDelete (tDLList *L) {
 **/
 	if (L->Act != NULL && L->Act != L->Last)
 	{
+		//uložení mazaného prvku, nastavení jeho následníka jako následníka aktivního prvku
 		tDLElemPtr temp = L->Act->rptr;
 		L->Act->rptr = temp->rptr;
-		temp->rptr->lptr = L->Act;
+
+		//mazaný prvek je poslední, aktivní prvek je nový poslední
+		if (temp == L->Last)
+			L->Last = L->Act;
+		//jinak nastavíme předchůdce následníka mazaného prvku na aktivní prvek
+		else
+			temp->rptr->lptr = L->Act;
+		
 		free(temp);
 	}
 }
@@ -247,9 +256,17 @@ void DLPreDelete (tDLList *L) {
 **/
 	if (L->Act != NULL && L->Act != L->First)
 	{
+		//uložení mazaného prvku, nastavení jeho předchůdce jako předchůdce aktivního prvku
 		tDLElemPtr temp = L->Act->lptr;
 		L->Act->lptr = temp->lptr;
-		temp->lptr->rptr = L->Act;
+
+		//mazaný prvek je první, aktivní prvek je tedy nový první
+		if (temp == L->First)
+			L->First = L->Act;
+		//jinak nastavíme následníka předchůdce mazaného prvku na aktivní prvek
+		else
+			temp->lptr->rptr = L->Act;
+
 		free(temp);
 	}
 }
@@ -266,9 +283,12 @@ void DLPostInsert (tDLList *L, int val) {
 		tDLElemPtr item = malloc(sizeof(struct tDLElem));
 		if (item != NULL)
 		{
+			//nastavení nového prvku, je následníkem právě aktivního prvku
 			item->data = val;
 			item->lptr = L->Act;
 			item->rptr = L->Act->rptr;
+
+			//nový prvek je nyní rovněž předchůdcem následníka aktivního prvku
 			L->Act->rptr->lptr = item;
 			L->Act->rptr = item;
 		}
@@ -288,9 +308,12 @@ void DLPreInsert (tDLList *L, int val) {
 		tDLElemPtr item = malloc(sizeof(struct tDLElem));
 		if (item != NULL)
 		{
+			//nastavení nového prvku, je předchůdcem právě aktivního prvku
 			item->data = val;
 			item->lptr = L->Act->lptr;
 			item->rptr = L->Act;
+
+			//nový prvek je nyní rovněž následníkem předchůdce aktivního prvku
 			L->Act->lptr->rptr = item;
 			L->Act->lptr = item;
 		}
