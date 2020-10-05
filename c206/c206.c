@@ -192,9 +192,17 @@ void DLDeleteFirst (tDLList *L) {
 ** Zruší první prvek seznamu L. Pokud byl první prvek aktivní, aktivita 
 ** se ztrácí. Pokud byl seznam L prázdný, nic se neděje.
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->First != NULL)
+	{
+		//ztráta aktivity, pokud byl první prvek aktivní
+		if (L->First == L->Act)
+			L->Act = NULL;
+
+		//uvolnění paměti prvního prvku, nastavení jeho následníka jako nového prvního
+		tDLElemPtr temp = L->First->rptr;
+		free(L->First);
+		L->First = temp;
+	}
 }	
 
 void DLDeleteLast (tDLList *L) {
@@ -203,9 +211,17 @@ void DLDeleteLast (tDLList *L) {
 ** Pokud byl poslední prvek aktivní, aktivita seznamu se ztrácí.
 ** Pokud byl seznam L prázdný, nic se neděje.
 **/ 
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Last != NULL)
+	{
+		//ztráta aktivity, pokud byl poslední prvek aktivní
+		if (L->Last == L->Act)
+			L->Act = NULL;
+
+		//uvolnění paměti posledního prvku, nastavení jeho předchůdce jako nového posledního
+		tDLElemPtr temp = L->Last->lptr;
+		free(L->Last);
+		L->Last = temp;
+	}
 }
 
 void DLPostDelete (tDLList *L) {
