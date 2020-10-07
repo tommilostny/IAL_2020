@@ -86,9 +86,16 @@ void DLDisposeList (tDLList *L) {
 ** se nacházel po inicializaci. Rušené prvky seznamu budou korektně
 ** uvolněny voláním operace free. 
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	tDLElemPtr item = L->First;
+	while (item != NULL)
+	{
+		tDLElemPtr temp = item->rptr;
+		free(item);
+		item = temp;
+	}
+	L->First = NULL;
+	L->Act = NULL;
+	L->Last = NULL;
 }
 
 void DLInsertFirst (tDLList *L, int val) {
