@@ -75,9 +75,9 @@ void DLInitList (tDLList *L) {
 ** seznamem, a proto tuto možnost neošetřujte. Vždy předpokládejte,
 ** že neinicializované proměnné mají nedefinovanou hodnotu.
 **/
-    
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+    L->Act = NULL;
+	L->First = NULL;
+	L->Last = NULL;
 }
 
 void DLDisposeList (tDLList *L) {
@@ -86,9 +86,16 @@ void DLDisposeList (tDLList *L) {
 ** se nacházel po inicializaci. Rušené prvky seznamu budou korektně
 ** uvolněny voláním operace free. 
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	tDLElemPtr item = L->First;
+	while (item != NULL)
+	{
+		tDLElemPtr temp = item->rptr;
+		free(item);
+		item = temp;
+	}
+	L->First = NULL;
+	L->Act = NULL;
+	L->Last = NULL;
 }
 
 void DLInsertFirst (tDLList *L, int val) {
@@ -97,9 +104,25 @@ void DLInsertFirst (tDLList *L, int val) {
 ** V případě, že není dostatek paměti pro nový prvek při operaci malloc,
 ** volá funkci DLError().
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	tDLElemPtr item = malloc(sizeof(struct tDLElem));
+
+	if (item != NULL) //kontrola alokace nového prvku
+	{
+		//nový prvek - nemá předchůce, následníkem je současný první prvek
+		item->data = val;
+		item->lptr = NULL;
+		item->rptr = L->First;
+
+		//předchozím prvkem aktuálně prvního je nově vytvořený prvek
+		if (L->First != NULL)
+			L->First->lptr = item;
+		L->First = item;
+
+		//v případě prázdného seznamu je nový prvek zároveň posledním
+		if (L->Last == NULL)
+			L->Last = item;
+	}
+	else DLError();
 }
 
 void DLInsertLast(tDLList *L, int val) {
@@ -108,9 +131,25 @@ void DLInsertLast(tDLList *L, int val) {
 ** V případě, že není dostatek paměti pro nový prvek při operaci malloc,
 ** volá funkci DLError().
 **/ 	
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	tDLElemPtr item = malloc(sizeof(struct tDLElem));
+
+	if (item != NULL)
+	{
+		//nový prvek - předchůdcem je aktuálně poslední prvek, následníka nemá
+		item->data = val;
+		item->lptr = L->Last;
+		item->rptr = NULL;
+
+		//následníkem aktuálně posledního prvku je nový prvek
+		if (L->Last != NULL)
+			L->Last->rptr = item;
+		L->Last = item;
+
+		//v případě prázdného seznamu je nový prvek zároveň prvním
+		if (L->First == NULL)
+			L->First = item;
+	}
+	else DLError();
 }
 
 void DLFirst (tDLList *L) {
@@ -119,9 +158,7 @@ void DLFirst (tDLList *L) {
 ** Funkci implementujte jako jediný příkaz (nepočítáme-li return),
 ** aniž byste testovali, zda je seznam L prázdný.
 **/
-	
-
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	L->Act = L->First;
 }
 
 void DLLast (tDLList *L) {
@@ -130,9 +167,7 @@ void DLLast (tDLList *L) {
 ** Funkci implementujte jako jediný příkaz (nepočítáme-li return),
 ** aniž byste testovali, zda je seznam L prázdný.
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	L->Act = L->Last;
 }
 
 void DLCopyFirst (tDLList *L, int *val) {
@@ -140,10 +175,11 @@ void DLCopyFirst (tDLList *L, int *val) {
 ** Prostřednictvím parametru val vrátí hodnotu prvního prvku seznamu L.
 ** Pokud je seznam L prázdný, volá funkci DLError().
 **/
-
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->First != NULL)
+	{
+		*val = L->First->data;
+	}
+	else DLError();
 }
 
 void DLCopyLast (tDLList *L, int *val) {
@@ -151,9 +187,11 @@ void DLCopyLast (tDLList *L, int *val) {
 ** Prostřednictvím parametru val vrátí hodnotu posledního prvku seznamu L.
 ** Pokud je seznam L prázdný, volá funkci DLError().
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Last != NULL)
+	{
+		*val = L->Last->data;
+	}
+	else DLError();
 }
 
 void DLDeleteFirst (tDLList *L) {
@@ -161,9 +199,17 @@ void DLDeleteFirst (tDLList *L) {
 ** Zruší první prvek seznamu L. Pokud byl první prvek aktivní, aktivita 
 ** se ztrácí. Pokud byl seznam L prázdný, nic se neděje.
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->First != NULL)
+	{
+		//ztráta aktivity, pokud byl první prvek aktivní
+		if (L->First == L->Act)
+			L->Act = NULL;
+
+		//uvolnění paměti prvního prvku, nastavení jeho následníka jako nového prvního
+		tDLElemPtr temp = L->First->rptr;
+		free(L->First);
+		L->First = temp;
+	}
 }	
 
 void DLDeleteLast (tDLList *L) {
@@ -172,9 +218,18 @@ void DLDeleteLast (tDLList *L) {
 ** Pokud byl poslední prvek aktivní, aktivita seznamu se ztrácí.
 ** Pokud byl seznam L prázdný, nic se neděje.
 **/ 
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Last != NULL)
+	{
+		//ztráta aktivity, pokud byl poslední prvek aktivní
+		if (L->Last == L->Act)
+			L->Act = NULL;
+
+		//uvolnění paměti posledního prvku, nastavení jeho předchůdce jako nového posledního
+		tDLElemPtr temp = L->Last;
+		L->Last = L->Last->lptr;
+		L->Last->rptr = NULL;
+		free(temp);
+	}
 }
 
 void DLPostDelete (tDLList *L) {
@@ -183,9 +238,21 @@ void DLPostDelete (tDLList *L) {
 ** Pokud je seznam L neaktivní nebo pokud je aktivní prvek
 ** posledním prvkem seznamu, nic se neděje.
 **/
-	
+	if (L->Act != NULL && L->Act != L->Last)
+	{
+		//uložení mazaného prvku, nastavení jeho následníka jako následníka aktivního prvku
+		tDLElemPtr temp = L->Act->rptr;
+		L->Act->rptr = temp->rptr;
+
+		//mazaný prvek je poslední, aktivní prvek je nový poslední
+		if (temp == L->Last)
+			L->Last = L->Act;
+		//jinak nastavíme předchůdce následníka mazaného prvku na aktivní prvek
+		else
+			temp->rptr->lptr = L->Act;
 		
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+		free(temp);
+	}
 }
 
 void DLPreDelete (tDLList *L) {
@@ -194,9 +261,21 @@ void DLPreDelete (tDLList *L) {
 ** Pokud je seznam L neaktivní nebo pokud je aktivní prvek
 ** prvním prvkem seznamu, nic se neděje.
 **/
-	
-			
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Act != NULL && L->Act != L->First)
+	{
+		//uložení mazaného prvku, nastavení jeho předchůdce jako předchůdce aktivního prvku
+		tDLElemPtr temp = L->Act->lptr;
+		L->Act->lptr = temp->lptr;
+
+		//mazaný prvek je první, aktivní prvek je tedy nový první
+		if (temp == L->First)
+			L->First = L->Act;
+		//jinak nastavíme následníka předchůdce mazaného prvku na aktivní prvek
+		else
+			temp->lptr->rptr = L->Act;
+
+		free(temp);
+	}
 }
 
 void DLPostInsert (tDLList *L, int val) {
@@ -206,9 +285,22 @@ void DLPostInsert (tDLList *L, int val) {
 ** V případě, že není dostatek paměti pro nový prvek při operaci malloc,
 ** volá funkci DLError().
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Act != NULL)
+	{
+		tDLElemPtr item = malloc(sizeof(struct tDLElem));
+		if (item != NULL)
+		{
+			//nastavení nového prvku, je následníkem právě aktivního prvku
+			item->data = val;
+			item->lptr = L->Act;
+			item->rptr = L->Act->rptr;
+
+			//nový prvek je nyní rovněž předchůdcem následníka aktivního prvku
+			L->Act->rptr->lptr = item;
+			L->Act->rptr = item;
+		}
+		else DLError();
+	}
 }
 
 void DLPreInsert (tDLList *L, int val) {
@@ -218,9 +310,21 @@ void DLPreInsert (tDLList *L, int val) {
 ** V případě, že není dostatek paměti pro nový prvek při operaci malloc,
 ** volá funkci DLError().
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Act != NULL)
+	{
+		tDLElemPtr item = malloc(sizeof(struct tDLElem));
+		if (item != NULL)
+		{
+			//nastavení nového prvku, je předchůdcem právě aktivního prvku
+			item->data = val;
+			item->lptr = L->Act->lptr;
+			item->rptr = L->Act;
+
+			//nový prvek je nyní rovněž následníkem předchůdce aktivního prvku
+			L->Act->lptr->rptr = item;
+			L->Act->lptr = item;
+		}
+	}
 }
 
 void DLCopy (tDLList *L, int *val) {
@@ -228,10 +332,11 @@ void DLCopy (tDLList *L, int *val) {
 ** Prostřednictvím parametru val vrátí hodnotu aktivního prvku seznamu L.
 ** Pokud seznam L není aktivní, volá funkci DLError ().
 **/
-		
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Act != NULL)
+	{
+		*val = L->Act->data;
+	}
+	else DLError();
 }
 
 void DLActualize (tDLList *L, int val) {
@@ -239,9 +344,10 @@ void DLActualize (tDLList *L, int val) {
 ** Přepíše obsah aktivního prvku seznamu L.
 ** Pokud seznam L není aktivní, nedělá nic.
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Act != NULL)
+	{
+		L->Act->data = val;
+	}
 }
 
 void DLSucc (tDLList *L) {
@@ -250,9 +356,10 @@ void DLSucc (tDLList *L) {
 ** Není-li seznam aktivní, nedělá nic.
 ** Všimněte si, že při aktivitě na posledním prvku se seznam stane neaktivním.
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Act != NULL)
+	{
+		L->Act = L->Act->rptr;
+	}
 }
 
 
@@ -262,9 +369,10 @@ void DLPred (tDLList *L) {
 ** Není-li seznam aktivní, nedělá nic.
 ** Všimněte si, že při aktivitě na prvním prvku se seznam stane neaktivním.
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	if (L->Act != NULL)
+	{
+		L->Act = L->Act->lptr;
+	}
 }
 
 int DLActive (tDLList *L) {
@@ -272,9 +380,7 @@ int DLActive (tDLList *L) {
 ** Je-li seznam L aktivní, vrací nenulovou hodnotu, jinak vrací 0.
 ** Funkci je vhodné implementovat jedním příkazem return.
 **/
-	
-	
- solved = FALSE;                   /* V případě řešení, smažte tento řádek! */
+	return L->Act != NULL;
 }
 
 /* Konec c206.c*/
