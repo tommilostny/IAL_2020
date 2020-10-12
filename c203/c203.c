@@ -77,10 +77,12 @@ void queueInit (tQueue* q) {
 */
 	if (q != NULL)
 	{
+		//ukazatel na frontu je platný, prvky pole jsou nastaveny na výchozí hodnotu
 		for (size_t i = 0; i < QUEUE_SIZE; i++)
 		{
 			q->arr[i] = '*';
 		}
+		//fronta je prázdná, indexy na začátek a konec fronty jsou vynulovány
 		q->b_index = q->f_index = 0;
 	}
 	else queueError(QERR_INIT);
@@ -125,6 +127,7 @@ void queueFront (const tQueue* q, char* c) {
 */
 	if (!queueEmpty(q))
 	{
+		//fronta není prázdná a je vrácena hodnota ze začátku fronty
 		*c = q->arr[q->f_index];
 	}
 	else queueError(QERR_FRONT);
@@ -139,6 +142,7 @@ void queueRemove (tQueue* q) {
 */
 	if (!queueEmpty(q))
 	{
+		//fronta není prázdná, prvek je z fronty odstraněn posunutím indexu začátku fronty
 		q->f_index = nextIndex(q->f_index);
 	}
 	else queueError(QERR_REMOVE);
@@ -154,6 +158,7 @@ void queueGet (tQueue* q, char* c) {
 */
 	if (!queueEmpty(q))
 	{
+		//fronta není prázdná, prvek na začátku fronty je vrácen a odstraněn z fronty
 		queueFront(q, c);
 		queueRemove(q);
 	}
@@ -172,6 +177,7 @@ void queueUp (tQueue* q, char c) {
 */
 	if (!queueFull(q))
 	{
+		//fronta není plná, prvek c je vložen na první volnou pozici, která je posunuta
 		q->arr[q->b_index] = c;
 		q->b_index = nextIndex(q->b_index);
 	}

@@ -86,13 +86,16 @@ void DLDisposeList (tDLList *L) {
 ** se nacházel po inicializaci. Rušené prvky seznamu budou korektně
 ** uvolněny voláním operace free. 
 **/
+	//procházíme seznam od začátku do konce
 	tDLElemPtr item = L->First;
 	while (item != NULL)
 	{
-		tDLElemPtr temp = item->rptr;
+		//uvolnění prvku seznamu, uložení následujícího prvku k mazání
+		tDLElemPtr next_ptr = item->rptr;
 		free(item);
-		item = temp;
+		item = next_ptr;
 	}
+	//stav po inicializaci
 	L->First = NULL;
 	L->Act = NULL;
 	L->Last = NULL;
@@ -206,9 +209,9 @@ void DLDeleteFirst (tDLList *L) {
 			L->Act = NULL;
 
 		//uvolnění paměti prvního prvku, nastavení jeho následníka jako nového prvního
-		tDLElemPtr temp = L->First->rptr;
+		tDLElemPtr new_first = L->First->rptr;
 		free(L->First);
-		L->First = temp;
+		L->First = new_first;
 	}
 }	
 
@@ -225,10 +228,10 @@ void DLDeleteLast (tDLList *L) {
 			L->Act = NULL;
 
 		//uvolnění paměti posledního prvku, nastavení jeho předchůdce jako nového posledního
-		tDLElemPtr temp = L->Last;
+		tDLElemPtr new_last = L->Last;
 		L->Last = L->Last->lptr;
 		L->Last->rptr = NULL;
-		free(temp);
+		free(new_last);
 	}
 }
 
@@ -241,17 +244,17 @@ void DLPostDelete (tDLList *L) {
 	if (L->Act != NULL && L->Act != L->Last)
 	{
 		//uložení mazaného prvku, nastavení jeho následníka jako následníka aktivního prvku
-		tDLElemPtr temp = L->Act->rptr;
-		L->Act->rptr = temp->rptr;
+		tDLElemPtr item = L->Act->rptr;
+		L->Act->rptr = item->rptr;
 
 		//mazaný prvek je poslední, aktivní prvek je nový poslední
-		if (temp == L->Last)
+		if (item == L->Last)
 			L->Last = L->Act;
 		//jinak nastavíme předchůdce následníka mazaného prvku na aktivní prvek
 		else
-			temp->rptr->lptr = L->Act;
+			item->rptr->lptr = L->Act;
 		
-		free(temp);
+		free(item);
 	}
 }
 
@@ -264,17 +267,17 @@ void DLPreDelete (tDLList *L) {
 	if (L->Act != NULL && L->Act != L->First)
 	{
 		//uložení mazaného prvku, nastavení jeho předchůdce jako předchůdce aktivního prvku
-		tDLElemPtr temp = L->Act->lptr;
-		L->Act->lptr = temp->lptr;
+		tDLElemPtr item = L->Act->lptr;
+		L->Act->lptr = item->lptr;
 
 		//mazaný prvek je první, aktivní prvek je tedy nový první
-		if (temp == L->First)
+		if (item == L->First)
 			L->First = L->Act;
 		//jinak nastavíme následníka předchůdce mazaného prvku na aktivní prvek
 		else
-			temp->lptr->rptr = L->Act;
+			item->lptr->rptr = L->Act;
 
-		free(temp);
+		free(item);
 	}
 }
 

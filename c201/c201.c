@@ -79,9 +79,10 @@ void DisposeList (tList *L) {
 	tElemPtr item = L->First;
 	while (item != NULL)
 	{
-		tElemPtr temp = item->ptr;
+		//uvolnění prvku seznamu, uložení následujícího prvku k mazání
+		tElemPtr next_ptr = item->ptr;
 		free(item);
-		item = temp;
+		item = next_ptr;
 	}
 	L->Act = NULL;
 	L->First = NULL;
@@ -96,6 +97,7 @@ void InsertFirst (tList *L, int val) {
 	tElemPtr item = malloc(sizeof(struct tElem));
 	if (item != NULL)
 	{
+		//alokace nového prvku byla úspěšná, je vložen do seznamu a nastaven jako první prvek
 		item->data = val;
 		item->ptr = L->First;	
 		L->First = item;
@@ -132,13 +134,16 @@ void DeleteFirst (tList *L) {
 **/
 	if (L->First != NULL)
 	{
+		//ztráta aktivity při mazání prvního prvku
 		if (L->First == L->Act)
 		{
 			L->Act = NULL;
 		}
-		tElemPtr temp = L->First->ptr;
+
+		//uvolnění prvku seznamu, uložení následujícího prvku k mazání
+		tElemPtr next_ptr = L->First->ptr;
 		free(L->First);
-		L->First = temp;
+		L->First = next_ptr;
 	}
 }	
 
@@ -150,6 +155,7 @@ void PostDelete (tList *L) {
 **/
 	if (L->Act != NULL && L->Act->ptr != NULL)
 	{
+		//uložení mazaného následníka, nastavení nového následníka a uvolnění paměti po mazaném prvku
 		tElemPtr item = L->Act->ptr;
 		L->Act->ptr = item->ptr;
 		free(item);
@@ -168,6 +174,7 @@ void PostInsert (tList *L, int val) {
 		tElemPtr item = malloc(sizeof(struct tElem));
 		if (item != NULL)
 		{
+			//alokace nového prvku byla úspěšná a je vložen do seznamu za aktivní prvek
 			item->data = val;
 			item->ptr = L->Act->ptr;
 			L->Act->ptr = item;
