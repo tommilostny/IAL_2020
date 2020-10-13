@@ -207,11 +207,19 @@ void DLDeleteFirst (tDLList *L) {
 		//ztráta aktivity, pokud byl první prvek aktivní
 		if (L->First == L->Act)
 			L->Act = NULL;
+		
+		//seznam obsahoval pouze jeden prvek, první byl zároveň posledním
+		if (L->First == L->Last)
+			L->Last = NULL;
 
 		//uvolnění paměti prvního prvku, nastavení jeho následníka jako nového prvního
 		tDLElemPtr new_first = L->First->rptr;
 		free(L->First);
 		L->First = new_first;
+
+		//pokud nedojde k vyprázdnění seznamu, je novému prvnímu prvku smazán odkaz na smazaného předchůdce
+		if (new_first != NULL)
+			new_first->lptr = NULL;
 	}
 }	
 
@@ -227,11 +235,18 @@ void DLDeleteLast (tDLList *L) {
 		if (L->Last == L->Act)
 			L->Act = NULL;
 
+		//seznam obsahoval pouze jeden prvek, první byl zároveň posledním
+		if (L->Last == L->First)
+			L->First = NULL;
+
 		//uvolnění paměti posledního prvku, nastavení jeho předchůdce jako nového posledního
-		tDLElemPtr new_last = L->Last;
-		L->Last = L->Last->lptr;
-		L->Last->rptr = NULL;
-		free(new_last);
+		tDLElemPtr new_last = L->Last->lptr;
+		free(L->Last);
+		L->Last = new_last;
+		
+		//pokud nedojde k vyprázdnění seznamu, je novému poslednímu prvku smazán odkaz na smazaného následníka
+		if (new_last != NULL)
+			new_last->rptr = NULL;
 	}
 }
 
@@ -298,8 +313,13 @@ void DLPostInsert (tDLList *L, int val) {
 			item->lptr = L->Act;
 			item->rptr = L->Act->rptr;
 
-			//nový prvek je nyní rovněž předchůdcem následníka aktivního prvku
-			L->Act->rptr->lptr = item;
+			//nový prvek je nyní rovněž předchůdcem následníka aktivního prvku,
+			//pokud následníkem není poslední prvek
+			if (L->Act != L->Last)
+				L->Act->rptr->lptr = item;
+			//jinak je nově vkládáný prvek posledním prvkem
+			else
+				L->Last = item;
 			L->Act->rptr = item;
 		}
 		else DLError();
@@ -323,8 +343,13 @@ void DLPreInsert (tDLList *L, int val) {
 			item->lptr = L->Act->lptr;
 			item->rptr = L->Act;
 
-			//nový prvek je nyní rovněž následníkem předchůdce aktivního prvku
-			L->Act->lptr->rptr = item;
+			//nový prvek je nyní rovněž následníkem předchůdce aktivního prvku,
+			//pokud předchůdcem není první prvek
+			if (L->Act != L->First)
+				L->Act->lptr->rptr = item;
+			//jinak je nově vkládáný prvek prvním prvkem
+			else
+				L->First = item;
 			L->Act->lptr = item;
 		}
 	}

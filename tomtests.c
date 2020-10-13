@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "c203/c203.h"
 #include "c203/c203.c"
+#include "c206/c206.c"
 
 ///Queue print from c203-test.c
 void queuePrint ( tQueue* q ) {
@@ -42,7 +42,7 @@ int QUEUE_SIZE;
 int solved;
 int err_flag;
 
-int main()
+void queueTests()
 {
     QUEUE_SIZE = 12;
 
@@ -86,4 +86,46 @@ int main()
     queuePrint(myq);
     queueUp(myq, 'G');
     queuePrint(myq);
+
+    free(myq);
+}
+
+void dllistTests()
+{
+    tDLList list;
+    DLInitList(&list);
+    DLInsertFirst(&list, 5);
+    DLDeleteFirst(&list);
+    DLInsertLast(&list, 5);
+    DLDeleteLast(&list);
+    
+    for (size_t i = 0; i < 5; i++)
+    {
+        DLInsertFirst(&list, i * 7);
+    }
+    for (size_t i = 100; i < 105; i++)
+    {
+        DLInsertLast(&list, i);
+    }
+    
+    for (size_t i = 0; i < 5; i++)
+    {
+        if (i % 2 == 0)
+            DLDeleteFirst(&list);
+        else
+            DLDeleteLast(&list);
+    }
+
+    DLLast(&list);
+    DLPostInsert(&list, 200);
+    DLFirst(&list);
+    DLPreInsert(&list, 300);
+    DLDisposeList(&list);
+}
+
+int main()
+{
+    queueTests();
+    dllistTests();
+    return 0;
 }
