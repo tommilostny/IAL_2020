@@ -136,9 +136,7 @@ void DeleteFirst (tList *L) {
 	{
 		//ztráta aktivity při mazání prvního prvku
 		if (L->First == L->Act)
-		{
 			L->Act = NULL;
-		}
 
 		//uvolnění prvku seznamu, uložení následujícího prvku k mazání
 		tElemPtr next_ptr = L->First->ptr;
