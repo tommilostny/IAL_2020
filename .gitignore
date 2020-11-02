@@ -1,7 +1,8 @@
-c201/c201-test
-c203/c203-test
-c206/c206-test
-c206/test2.output
-a.out
+du1/c201/c201-test
+du1/c203/c203-test
+du1/c206/c206-test
+du1/c206/test2.output
+du1/a.out
 .vscode
-tomtests
+du1/tomtests
+
