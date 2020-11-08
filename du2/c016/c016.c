@@ -128,9 +128,14 @@ void htInsert ( tHTable* ptrht, tKey key, tData data )
 ** Využijte dříve vytvořenou funkci HTSearch.
 */
 
-tData* htRead ( tHTable* ptrht, tKey key ) {
-
- solved = 0; /*v pripade reseni, smazte tento radek!*/
+tData* htRead ( tHTable* ptrht, tKey key )
+{
+	tHTItem* item = htSearch(ptrht, key);
+	if (item != NULL)
+	{
+		return &(item->data);
+	}
+	return NULL;
 }
 
 /*
