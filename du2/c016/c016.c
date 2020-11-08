@@ -83,7 +83,7 @@ void htInit ( tHTable* ptrht )
 tHTItem* htSearch ( tHTable* ptrht, tKey key )
 {
 	int index = hashCode(key);
-	for (tHTItem* item = (*ptrht)[index]; item != NULL ; item = item->ptrnext)
+	for (tHTItem* item = (*ptrht)[index]; item != NULL; item = item->ptrnext)
 	{
 		if (item->key == key)
 			return item;
@@ -148,9 +148,30 @@ tData* htRead ( tHTable* ptrht, tKey key )
 ** V tomto případě NEVYUŽÍVEJTE dříve vytvořenou funkci HTSearch.
 */
 
-void htDelete ( tHTable* ptrht, tKey key ) {
+void htDelete ( tHTable* ptrht, tKey key )
+{
+	int index = hashCode(key);
+	tHTItem* item = (*ptrht)[index];
+	tHTItem* prev = NULL;
 
- solved = 0; /*v pripade reseni, smazte tento radek!*/
+	while (item != NULL) //procházení neprázdného seznamu
+	{
+		if (item->key == key) //nalezení prvku s mazaným klíčem
+		{
+			//mazaný prvek je první
+			if (prev == NULL)
+				(*ptrht)[index] = item->ptrnext;
+			
+			//mazaný prvek je dál v seznamu
+			else
+				prev->ptrnext = item->ptrnext;
+
+			free(item);
+			return;
+		}
+		prev = item;
+		item = item->ptrnext;
+	}
 }
 
 /* TRP s explicitně zřetězenými synonymy.
