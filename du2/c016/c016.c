@@ -65,9 +65,13 @@ int hashCode ( tKey key ) {
 ** se volá pouze před prvním použitím tabulky.
 */
 
-void htInit ( tHTable* ptrht ) {
-
- solved = 0; /*v pripade reseni, smazte tento radek!*/
+void htInit ( tHTable* ptrht )
+{
+	for (int i = 0; i < HTSIZE; i++)
+	{
+		//*(ptrht[i]) = NULL; ?
+		*ptrht[i] = NULL;
+	}
 }
 
 /* TRP s explicitně zřetězenými synonymy.
