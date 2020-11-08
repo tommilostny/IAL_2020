@@ -81,9 +81,15 @@ void htInit ( tHTable* ptrht )
 **
 */
 
-tHTItem* htSearch ( tHTable* ptrht, tKey key ) {
-
- solved = 0; /*v pripade reseni, smazte tento radek!*/
+tHTItem* htSearch ( tHTable* ptrht, tKey key )
+{
+	int index = hashCode(key);
+	for (tHTItem* item = ptrht[index]; item != NULL ; item = item->ptrnext)
+	{
+		if (item->key == key)
+			return item;
+	}
+	return NULL;
 }
 
 /*
