@@ -69,8 +69,7 @@ void htInit ( tHTable* ptrht )
 {
 	for (int i = 0; i < HTSIZE; i++)
 	{
-		//*(ptrht[i]) = NULL; ?
-		*ptrht[i] = NULL;
+		(*ptrht)[i] = NULL;
 	}
 }
 
@@ -84,7 +83,7 @@ void htInit ( tHTable* ptrht )
 tHTItem* htSearch ( tHTable* ptrht, tKey key )
 {
 	int index = hashCode(key);
-	for (tHTItem* item = ptrht[index]; item != NULL ; item = item->ptrnext)
+	for (tHTItem* item = (*ptrht)[index]; item != NULL ; item = item->ptrnext)
 	{
 		if (item->key == key)
 			return item;
@@ -104,9 +103,20 @@ tHTItem* htSearch ( tHTable* ptrht, tKey key )
 ** tedy proveďte.vložení prvku na začátek seznamu.
 **/
 
-void htInsert ( tHTable* ptrht, tKey key, tData data ) {
-
- solved = 0; /*v pripade reseni, smazte tento radek!*/
+void htInsert ( tHTable* ptrht, tKey key, tData data )
+{
+	tHTItem* item = htSearch(ptrht, key);
+	if (item == NULL) //prvek v tabulce není -> vytvoření nového
+	{
+		item = malloc(sizeof(tHTItem));
+		item->key = key;
+		
+		int next_index = hashCode(key);
+		item->ptrnext = (*ptrht)[next_index];
+		(*ptrht)[next_index] = item;
+	}
+	//prvek v tabulce je -> pouze aktualizace dat
+	item->data = data;
 }
 
 /*
