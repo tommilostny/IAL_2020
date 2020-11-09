@@ -72,14 +72,20 @@ int BSTSearch (tBSTNodePtr RootPtr, char K, int *Content)	{
 ** problém řešte rekurzivním volání této funkce, přičemž nedeklarujte žádnou
 ** pomocnou funkci.
 **/
-	if (RootPtr == NULL)
+	if (RootPtr == NULL) //konec stromu -> nenalezeno, FALSE
 		return FALSE;
-	if (RootPtr->Key == K)
+
+	//hledání v levém (K je menší) a případně pravém (K je větší) podstromu
+	else if (K < RootPtr->Key)
+		return BSTSearch(RootPtr->LPtr, K, Content);
+	else if (K > RootPtr->Key)
+		return BSTSearch(RootPtr->RPtr, K, Content);
+
+	else //nalezení klíče -> TRUE, uložení obsahu
 	{
 		*Content = RootPtr->BSTNodeCont;
 		return TRUE;
 	}
-	return BSTSearch(RootPtr->LPtr, K, Content) || BSTSearch(RootPtr->RPtr, K, Content);
 }
 
 
