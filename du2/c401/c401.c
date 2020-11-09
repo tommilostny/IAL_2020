@@ -72,11 +72,14 @@ int BSTSearch (tBSTNodePtr RootPtr, char K, int *Content)	{
 ** problém řešte rekurzivním volání této funkce, přičemž nedeklarujte žádnou
 ** pomocnou funkci.
 **/
-
-	
-
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
-
+	if (RootPtr == NULL)
+		return FALSE;
+	if (RootPtr->Key == K)
+	{
+		*Content = RootPtr->BSTNodeCont;
+		return TRUE;
+	}
+	return BSTSearch(RootPtr->LPtr, K, Content) || BSTSearch(RootPtr->RPtr, K, Content);
 }
 
 
