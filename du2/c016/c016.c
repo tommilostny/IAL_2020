@@ -179,7 +179,18 @@ void htDelete ( tHTable* ptrht, tKey key )
 ** který tyto položky zabíraly, a uvede tabulku do počátečního stavu.
 */
 
-void htClearAll ( tHTable* ptrht ) {
-
- solved = 0; /*v pripade reseni, smazte tento radek!*/
+void htClearAll ( tHTable* ptrht )
+{
+	for (int i = 0; i < HTSIZE; i++)
+	{
+		//mazání seznamu na i-tém řádku tabulky
+		tHTItem* item = (*ptrht)[i];
+		while (item != NULL)
+		{
+			tHTItem* next = item->ptrnext;
+			free(item);
+			item = next;
+		}
+		(*ptrht)[i] = NULL;
+	}
 }
