@@ -55,11 +55,7 @@ void BSTInit (tBSTNodePtr *RootPtr) {
 ** Proto je třeba při přiřazení přes RootPtr použít dereferenční operátor *.
 ** Ten bude použit i ve funkcích BSTDelete, BSTInsert a BSTDispose.
 **/
-
-	
-
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
-
+	*RootPtr = NULL;
 }
 
 int BSTSearch (tBSTNodePtr RootPtr, char K, int *Content)	{
