@@ -105,11 +105,23 @@ void BSTInsert (tBSTNodePtr* RootPtr, char K, int Content)	{
 ** rychlosti, tak z hlediska paměťových nároků. Zde jde ale o školní
 ** příklad, na kterém si chceme ukázat eleganci rekurzivního zápisu.
 **/
+	if (*RootPtr == NULL) //prázdný podstrom strom, vložení nového uzlu
+	{
+		*RootPtr = malloc(sizeof(struct tBSTNode));
+		(*RootPtr)->LPtr = NULL;
+		(*RootPtr)->RPtr = NULL;
+		(*RootPtr)->Key = K;
+		(*RootPtr)->BSTNodeCont = Content;
+	}
 
-	
+	//vložení do levého (K je menší) nebo pravého (K je větší) podstromu
+	else if (K < (*RootPtr)->Key)
+		BSTInsert(&(*RootPtr)->LPtr, K, Content);
+	else if (K > (*RootPtr)->Key)
+		BSTInsert(&(*RootPtr)->RPtr, K, Content);
 
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
-
+	else //aktualizace existujícího uzlu
+		(*RootPtr)->BSTNodeCont = Content;
 }
 
 void ReplaceByRightmost (tBSTNodePtr PtrReplaced, tBSTNodePtr *RootPtr) {
