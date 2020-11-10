@@ -83,7 +83,8 @@ int BSTSearch (tBSTNodePtr RootPtr, char K, int *Content)	{
 
 	else //nalezení klíče -> TRUE, uložení obsahu
 	{
-		*Content = RootPtr->BSTNodeCont;
+		if (Content != NULL)
+			*Content = RootPtr->BSTNodeCont;
 		return TRUE;
 	}
 }
@@ -136,11 +137,16 @@ void ReplaceByRightmost (tBSTNodePtr PtrReplaced, tBSTNodePtr *RootPtr) {
 ** Tato pomocná funkce bude použita dále. Než ji začnete implementovat,
 ** přečtěte si komentář k funkci BSTDelete().
 **/
-
-	
-
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
-
+	if ((*RootPtr)->RPtr != NULL)
+	{
+		*RootPtr = (*RootPtr)->RPtr;
+		ReplaceByRightmost(PtrReplaced, &(*RootPtr));
+	}
+	else //nahrazení dat z nalezeného nejpravějšího uzlu
+	{
+		PtrReplaced->Key = (*RootPtr)->Key;
+		PtrReplaced->BSTNodeCont = (*RootPtr)->BSTNodeCont;
+	}
 }
 
 void BSTDelete (tBSTNodePtr *RootPtr, char K) 		{
@@ -155,11 +161,43 @@ void BSTDelete (tBSTNodePtr *RootPtr, char K) 		{
 ** Tuto funkci implementujte rekurzivně s využitím dříve deklarované
 ** pomocné funkce ReplaceByRightmost.
 **/
+	if (*RootPtr != NULL)
+	{
+		if (K < (*RootPtr)->Key) //rušený prvek je v levém podstromu
+			BSTDelete(&(*RootPtr)->LPtr, K);
 
-	
+		else if (K > (*RootPtr)->Key) //rušený prvek je v pravém podstromu
+			BSTDelete(&(*RootPtr)->RPtr, K);
 
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
+		else //nalezen rušený prvek
+		{
+			//rušený prvek je terminální uzel -> nemá žádné potomky
+			if ((*RootPtr)->LPtr == NULL && (*RootPtr)->RPtr == NULL)
+			{
+				free(*RootPtr);
+				*RootPtr = NULL;
+			}
+			//rušený prvek má oba potomky
+			else if ((*RootPtr)->LPtr != NULL && (*RootPtr)->RPtr != NULL)
+			{
+				//nalezení nejpravějšího uzlu levého podstromu
+				tBSTNodePtr most_right = (*RootPtr)->LPtr;
+				ReplaceByRightmost(*RootPtr, &most_right);
 
+				//smazání nahrazovaného nejpravějšího uzlu
+				BSTDelete(&(*RootPtr)->LPtr, most_right->Key);
+			}
+			else //rušený prvek má jednoho potomka
+			{
+				tBSTNodePtr child = (*RootPtr)->LPtr != NULL ? (*RootPtr)->LPtr : (*RootPtr)->RPtr;
+				(*RootPtr)->Key = child->Key;
+				(*RootPtr)->LPtr = child->LPtr;
+				(*RootPtr)->RPtr = child->RPtr;
+				free(child);
+			}
+			
+		}
+	}
 }
 
 void BSTDispose (tBSTNodePtr *RootPtr) {
