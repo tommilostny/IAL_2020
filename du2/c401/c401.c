@@ -109,10 +109,13 @@ void BSTInsert (tBSTNodePtr* RootPtr, char K, int Content)	{
 	if (*RootPtr == NULL) //prázdný podstrom strom, vložení nového uzlu
 	{
 		*RootPtr = malloc(sizeof(struct tBSTNode));
-		(*RootPtr)->LPtr = NULL;
-		(*RootPtr)->RPtr = NULL;
-		(*RootPtr)->Key = K;
-		(*RootPtr)->BSTNodeCont = Content;
+		if (*RootPtr != NULL)
+		{
+			(*RootPtr)->LPtr = NULL;
+			(*RootPtr)->RPtr = NULL;
+			(*RootPtr)->Key = K;
+			(*RootPtr)->BSTNodeCont = Content;
+		}
 	}
 
 	//vložení do levého (K je menší) nebo pravého (K je větší) podstromu
@@ -191,6 +194,7 @@ void BSTDelete (tBSTNodePtr *RootPtr, char K) 		{
 			{
 				tBSTNodePtr child = (*RootPtr)->LPtr != NULL ? (*RootPtr)->LPtr : (*RootPtr)->RPtr;
 				(*RootPtr)->Key = child->Key;
+				(*RootPtr)->BSTNodeCont = child->BSTNodeCont;
 				(*RootPtr)->LPtr = child->LPtr;
 				(*RootPtr)->RPtr = child->RPtr;
 				free(child);

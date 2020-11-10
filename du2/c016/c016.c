@@ -109,11 +109,15 @@ void htInsert ( tHTable* ptrht, tKey key, tData data )
 	if (item == NULL) //prvek v tabulce není -> vytvoření nového
 	{
 		item = malloc(sizeof(tHTItem));
-		item->key = key;
-		
-		int next_index = hashCode(key);
-		item->ptrnext = (*ptrht)[next_index];
-		(*ptrht)[next_index] = item;
+		if (item != NULL)
+		{
+			item->key = key;
+			
+			int next_index = hashCode(key);
+			item->ptrnext = (*ptrht)[next_index];
+			(*ptrht)[next_index] = item;
+		}
+		else return;
 	}
 	//prvek v tabulce je -> pouze aktualizace dat
 	item->data = data;
