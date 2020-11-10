@@ -208,10 +208,20 @@ void BSTDispose (tBSTNodePtr *RootPtr) {
 ** inicializaci. Tuto funkci implementujte rekurzivně bez deklarování pomocné
 ** funkce.
 **/
-	
+	if (*RootPtr != NULL)
+	{
+		//zrušení levého podstromu
+		if ((*RootPtr)->LPtr != NULL)
+			BSTDispose(&(*RootPtr)->LPtr);
+		
+		//zrušení pravého podstromu
+		if ((*RootPtr)->RPtr != NULL)
+			BSTDispose(&(*RootPtr)->RPtr);
 
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
-
+		//zrušení uzlu s uvolněnými podstromy
+		free(*RootPtr);
+		*RootPtr = NULL;
+	}
 }
 
 /* konec c401.c */
