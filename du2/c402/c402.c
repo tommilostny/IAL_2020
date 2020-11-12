@@ -179,9 +179,7 @@ void BTInit (tBTNodePtr *RootPtr)	{
 ** Všimněte si, že zde se poprvé v hlavičce objevuje typ ukazatel na ukazatel,
 ** proto je třeba při práci s RootPtr použít dereferenční operátor *.
 **/
-	
-
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
+	*RootPtr = NULL;
 }
 
 void BTInsert (tBTNodePtr *RootPtr, int Content) {
@@ -194,10 +192,27 @@ void BTInsert (tBTNodePtr *RootPtr, int Content) {
 ** se ve stromu může vyskytnout nejvýše jednou). Pokud se vytváří nový uzel,
 ** vzniká vždy jako list stromu. Funkci implementujte nerekurzivně.
 **/
+	while (*RootPtr != NULL) //průchod stromem k pozici pro vložení
+	{
+		//přechod do levého (K je menší) nebo pravého (K je větší) podstromu
+		if (Content < (*RootPtr)->Cont)
+			RootPtr = &(*RootPtr)->LPtr;
 
-	
+		else if (Content > (*RootPtr)->Cont)
+			RootPtr = &(*RootPtr)->RPtr;
 
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
+		//uzel již ve stromu existuje, funkce nevytváří nový a vrací se
+		else return;
+	}
+
+	//uzel ve stromě není, vytvoření nového listu stromu
+	*RootPtr = malloc(sizeof(struct tBTNode));
+	if (*RootPtr != NULL)
+	{
+		(*RootPtr)->LPtr = NULL;
+		(*RootPtr)->RPtr = NULL;
+		(*RootPtr)->Cont = Content;
+	}
 }
 
 /*                                  PREORDER                                  */
