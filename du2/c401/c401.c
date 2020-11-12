@@ -143,7 +143,7 @@ void ReplaceByRightmost (tBSTNodePtr PtrReplaced, tBSTNodePtr *RootPtr) {
 	if ((*RootPtr)->RPtr != NULL)
 	{
 		*RootPtr = (*RootPtr)->RPtr;
-		ReplaceByRightmost(PtrReplaced, &(*RootPtr));
+		ReplaceByRightmost(PtrReplaced, RootPtr);
 	}
 	else //nahrazení dat z nalezeného nejpravějšího uzlu
 	{
