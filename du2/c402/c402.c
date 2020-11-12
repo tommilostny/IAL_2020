@@ -347,7 +347,7 @@ void BTDisposeTree (tBTNodePtr *RootPtr)	{
 		if (!SEmptyP(&pointers)) //pokud je co mazat, odstraní prvek na vrcholu zásobníku
 		{
 			item = STopPopP(&pointers);
-			tBTNodePtr right = item->RPtr; //uložíme si ukazatel na pravý podstrom, na zásobníku bude jeho levá diagonála
+			tBTNodePtr right = item->RPtr; //uložíme si ukazatel na pravý podstrom, na zásobníku bude v příštím kroku jeho levá diagonála
 			free(item);
 			item = right;
 		}
