@@ -306,10 +306,28 @@ void BTDisposeTree (tBTNodePtr *RootPtr)	{
 **
 ** Funkci implementujte nerekurzivně s využitím zásobníku ukazatelů.
 **/
-
+	tBTNodePtr item = *RootPtr; //Vkládání do zásobníku začíná od kořene
+	tStackP pointers;
+	SInitP(&pointers);
+	do
+	{
+		while (item != NULL) //vložení nejlevější diagonály
+		{
+			SPushP(&pointers, item);
+			item = item->LPtr;
+		}
+		if (!SEmptyP(&pointers)) //pokud je co mazat, odstraní prvek na vrcholu zásobníku
+		{
+			item = STopPopP(&pointers);
+			tBTNodePtr right = item->RPtr; //uložíme si ukazatel na pravý podstrom, na zásobníku bude jeho levá diagonála
+			free(item);
+			item = right;
+		}
+	}
+	//pokračujeme, pokud zásobník není prázdný nebo máme platný ukazatel na pravý podstrom
+	while (!SEmptyP(&pointers) || item != NULL);
 	
-
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
+	*RootPtr = NULL;
 }
 
 /* konec c402.c */
