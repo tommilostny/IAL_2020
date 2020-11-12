@@ -230,7 +230,6 @@ void Leftmost_Preorder (tBTNodePtr ptr, tStackP *Stack)	{
 		BTWorkOut(ptr);
 		ptr = ptr->LPtr;
 	}
-	
 }
 
 void BTPreorder (tBTNodePtr RootPtr)	{
@@ -264,7 +263,6 @@ void Leftmost_Inorder(tBTNodePtr ptr, tStackP *Stack)		{
 		SPushP(Stack, ptr);
 		ptr = ptr->LPtr;
 	}
-	
 }
 
 void BTInorder (tBTNodePtr RootPtr)	{
@@ -294,10 +292,12 @@ void Leftmost_Postorder (tBTNodePtr ptr, tStackP *StackP, tStackB *StackB) {
 ** a současně do zásobníku bool hodnot ukládáme informaci, zda byl uzel
 ** navštíven poprvé a že se tedy ještě nemá zpracovávat.
 **/
-
-	
-
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
+	while (ptr != NULL)
+	{
+		SPushP(StackP, ptr);
+		SPushB(StackB, false);
+		ptr = ptr->LPtr;
+	}
 }
 
 void BTPostorder (tBTNodePtr RootPtr)	{
@@ -306,10 +306,25 @@ void BTPostorder (tBTNodePtr RootPtr)	{
 ** Leftmost_Postorder, zásobníku ukazatelů a zásobníku hotdnot typu bool.
 ** Zpracování jednoho uzlu stromu realizujte jako volání funkce BTWorkOut().
 **/
+	tStackB visited;
+	tStackP pointers;
+	SInitB(&visited);
+	SInitP(&pointers);
+	Leftmost_Postorder(RootPtr, &pointers, &visited);
+	while (!SEmptyP(&pointers))
+	{
+		RootPtr = STopPopP(&pointers);
 
-	
-
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
+		if (STopPopB(&visited)) //uzel byl již navštíven (přichází zprava) a je zpracován
+			BTWorkOut(RootPtr);
+		
+		else //přichází se zleva, uzel není zpracován a je vrácen na zásobník
+		{
+			SPushP(&pointers, RootPtr);
+			SPushB(&visited, true);
+			Leftmost_Postorder(RootPtr->RPtr, &pointers, &visited);
+		}
+	}
 }
 
 
