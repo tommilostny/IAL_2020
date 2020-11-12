@@ -259,11 +259,12 @@ void Leftmost_Inorder(tBTNodePtr ptr, tStackP *Stack)		{
 ** Při průchodu Inorder ukládáme ukazatele na všechny navštívené uzly do
 ** zásobníku.
 **/
-
+	while (ptr != NULL)
+	{
+		SPushP(Stack, ptr);
+		ptr = ptr->LPtr;
+	}
 	
-
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
-
 }
 
 void BTInorder (tBTNodePtr RootPtr)	{
@@ -272,10 +273,15 @@ void BTInorder (tBTNodePtr RootPtr)	{
 ** Leftmost_Inorder a zásobníku ukazatelů. Zpracování jednoho uzlu stromu
 ** realizujte jako volání funkce BTWorkOut().
 **/
-
-	
-
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
+	tStackP pointers;
+	SInitP(&pointers);
+	Leftmost_Inorder(RootPtr, &pointers);
+	while (!SEmptyP(&pointers))
+	{
+		RootPtr = STopPopP(&pointers);
+		BTWorkOut(RootPtr);
+		Leftmost_Inorder(RootPtr->RPtr, &pointers);
+	}
 }
 
 /*                                 POSTORDER                                  */
